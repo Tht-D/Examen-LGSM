@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examen CENEVAL LGSM - 80 preguntas</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #64748b;
+      --primary: #1d4ed8;
+      --primary-dark: #1e40af;
+      --ok: #15803d;
+      --bad: #b91c1c;
+      --soft: #f1f5f9;
+      --line: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      height: 100%;
+      font-size: 16px;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: var(--text);
+      min-height: 100%;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      overflow-x: hidden;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 920px;
+      background: var(--card);
+      border-radius: 22px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.28);
+      overflow: hidden;
+    }
+
+    .top {
+      padding: 22px 26px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.25rem, 4vw, 1.6rem);
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: clamp(.92rem, 2.7vw, 1rem);
+    }
+
+    .progress-wrap {
+      margin-top: 16px;
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width .25s ease;
+    }
+
+    .content {
+      padding: 26px;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .95rem;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      padding: 9px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .question {
+      font-size: clamp(1.18rem, 4vw, 1.45rem);
+      line-height: 1.35;
+      font-weight: 700;
+      color: #111827;
+      margin: 8px 0 22px;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      width: 100%;
+      border: 2px solid var(--line);
+      background: white;
+      border-radius: 16px;
+      padding: 17px 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: clamp(1rem, 3.4vw, 1.08rem);
+      line-height: 1.38;
+      text-align: left;
+      touch-action: manipulation;
+      min-height: 58px;
+      transition: border-color .2s, background .2s, transform .08s ease;
+    }
+
+    @media (hover: hover) {
+      .option:hover {
+        transform: translateY(-1px);
+        border-color: #93c5fd;
+        background: #eff6ff;
+      }
+    }
+
+    .option:active {
+      transform: scale(.995);
+      background: #eff6ff;
+    }
+
+    .option.disabled {
+      pointer-events: none;
+    }
+
+    .letter {
+      min-width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      background: #e0e7ff;
+      color: #1e3a8a;
+      flex-shrink: 0;
+    }
+
+    .option.correct {
+      border-color: var(--ok);
+      background: #ecfdf5;
+    }
+
+    .option.correct .letter {
+      background: var(--ok);
+      color: white;
+    }
+
+    .option.incorrect {
+      border-color: var(--bad);
+      background: #fef2f2;
+    }
+
+    .option.incorrect .letter {
+      background: var(--bad);
+      color: white;
+    }
+
+    .feedback {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      display: none;
+      font-weight: 700;
+      line-height: 1.4;
+      font-size: 1rem;
+    }
+
+    .feedback.ok {
+      display: block;
+      color: var(--ok);
+      background: #ecfdf5;
+      border: 1px solid #bbf7d0;
+    }
+
+    .feedback.bad {
+      display: block;
+      color: var(--bad);
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 15px 20px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      touch-action: manipulation;
+      min-height: 52px;
+      transition: background .2s, opacity .2s, transform .08s ease;
+    }
+
+    button:active {
+      transform: scale(.99);
+    }
+
+    .primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    @media (hover: hover) {
+      .primary:hover {
+        background: var(--primary-dark);
+      }
+    }
+
+    .secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    @media (hover: hover) {
+      .secondary:hover {
+        background: #cbd5e1;
+      }
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .result {
+      display: none;
+      text-align: center;
+    }
+
+    .result h2 {
+      font-size: clamp(1.35rem, 5vw, 1.8rem);
+      margin-top: 0;
+    }
+
+    .score {
+      font-size: clamp(2.8rem, 12vw, 4rem);
+      font-weight: 900;
+      color: var(--primary);
+      margin: 12px 0;
+    }
+
+    .summary {
+      margin: 20px 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .summary div {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .summary strong {
+      display: block;
+      font-size: 1.45rem;
+      margin-bottom: 4px;
+    }
+
+    .review {
+      margin-top: 24px;
+      text-align: left;
+      max-height: 55dvh;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      display: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .review-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      line-height: 1.4;
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+    }
+
+    .review-item .small {
+      color: var(--muted);
+      font-size: .92rem;
+      margin-top: 6px;
+    }
+
+    .review-item.wrong {
+      border-left: 5px solid var(--bad);
+    }
+
+    .review-item.right {
+      border-left: 5px solid var(--ok);
+    }
+
+    @media (max-width: 760px) {
+      body {
+        align-items: stretch;
+        justify-content: flex-start;
+        padding: 0;
+        background: #ffffff;
+      }
+
+      .app {
+        min-height: 100dvh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 16px;
+      }
+
+      .content {
+        padding: 18px 16px 24px;
+      }
+
+      .meta {
+        font-size: .9rem;
+      }
+
+      .badge {
+        flex: 1;
+        text-align: center;
+        padding: 9px 8px;
+      }
+
+      .option {
+        border-radius: 14px;
+        padding: 15px 14px;
+        gap: 10px;
+      }
+
+      .letter {
+        min-width: 34px;
+        height: 34px;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+
+      .primary {
+        order: -1;
+      }
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .subtitle {
+        display: none;
+      }
+
+      .content {
+        padding: 16px 12px 22px;
+      }
+
+      .top {
+        padding: 14px 12px;
+      }
+
+      .option {
+        padding: 14px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="top">
+      <h1>Examen tipo CENEVAL — LGSM</h1>
+      <p class="subtitle">80 preguntas de opción múltiple. Contesta una pregunta a la vez; al elegir respuesta verás retroalimentación y podrás avanzar.</p>
+      <div class="progress-wrap">
+        <div class="progress" id="progress"></div>
+      </div>
+    </section>
+
+    <section class="content" id="quiz">
+      <div class="meta">
+        <span class="badge" id="counter">Pregunta 1 de 80</span>
+        <span class="badge" id="scoreLive">Aciertos: 0</span>
+      </div>
+
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+
+      <div class="actions">
+        <button class="secondary" id="restartBtn">Reiniciar</button>
+        <button class="primary" id="nextBtn" disabled>Siguiente</button>
+      </div>
+    </section>
+
+    <section class="content result" id="result">
+      <h2>Resultado final</h2>
+      <div class="score" id="finalScore"></div>
+      <p id="finalMessage"></p>
+
+      <div class="summary">
+        <div><strong id="totalRight">0</strong>Aciertos</div>
+        <div><strong id="totalWrong">0</strong>Errores</div>
+        <div><strong id="percent">0%</strong>Porcentaje</div>
+      </div>
+
+      <div class="actions" style="justify-content:center;">
+        <button class="secondary" id="toggleReviewBtn">Ver revisión</button>
+        <button class="primary" id="restartBtn2">Repetir examen</button>
+      </div>
+
+      <div class="review" id="review"></div>
+    </section>
+  </main>
+
+  <script>
+    const questions = [
+      {
+            "q": "¿Cuál es la característica esencial de la sociedad de responsabilidad limitada?",
+            "options": [
+                  "Los socios sólo están obligados al pago de sus aportaciones y sus partes sociales no pueden estar representadas por títulos negociables.",
+                  "Todos los socios responden subsidiaria, solidaria e ilimitadamente de las obligaciones sociales.",
+                  "Los accionistas responden únicamente por los bonos de fundador que suscriban.",
+                  "Los socios comanditarios administran directamente la sociedad."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La sociedad de responsabilidad limitada puede existir bajo:",
+            "options": [
+                  "Únicamente una razón social formada por socios comanditados.",
+                  "Una denominación o una razón social, seguida de “Sociedad de Responsabilidad Limitada” o “S. de R.L.”",
+                  "Una denominación libre seguida únicamente de “S.A.”",
+                  "Una razón social seguida de “Sociedad en Comandita por Acciones”."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "¿Cuál es el número máximo de socios en una sociedad de responsabilidad limitada?",
+            "options": [
+                  "20 socios.",
+                  "25 socios.",
+                  "50 socios.",
+                  "100 socios."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "En la S. de R.L., el capital social se divide en:",
+            "options": [
+                  "Acciones ordinarias y preferentes.",
+                  "Certificados provisionales nominativos.",
+                  "Bonos de fundador.",
+                  "Partes sociales."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "Al constituirse una sociedad de responsabilidad limitada, el capital deberá estar:",
+            "options": [
+                  "Íntegramente suscrito y exhibido por lo menos el 50% de cada parte social.",
+                  "Suscrito en un 20% y pagado dentro de tres años.",
+                  "Totalmente pagado en efectivo antes de la inscripción.",
+                  "Representado por acciones nominativas."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "En la S. de R.L., la cesión de partes sociales requiere, salvo pacto distinto:",
+            "options": [
+                  "Autorización judicial previa.",
+                  "Consentimiento de socios que representen la mayoría del capital social.",
+                  "Aprobación exclusiva del gerente.",
+                  "Consentimiento de los acreedores sociales."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Cuando se autoriza la cesión de partes sociales a una persona extraña a la sociedad, los socios tienen:",
+            "options": [
+                  "Derecho de veto absoluto sin plazo.",
+                  "Derecho a disolver la sociedad.",
+                  "Derecho del tanto.",
+                  "Derecho automático a excluir al cedente."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "La transmisión hereditaria de partes sociales:",
+            "options": [
+                  "Requiere siempre unanimidad de socios.",
+                  "Nunca puede realizarse.",
+                  "Convierte la S. de R.L. en sociedad anónima.",
+                  "No requiere consentimiento de los socios, salvo pacto en contrario."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "En principio, cada socio de una S. de R.L. tendrá:",
+            "options": [
+                  "Una sola parte social.",
+                  "Una acción por cada aportación.",
+                  "Un bono de fundador.",
+                  "Un certificado de goce obligatorio."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Las partes sociales en la S. de R.L. son:",
+            "options": [
+                  "Siempre al portador.",
+                  "Indivisibles, salvo que el contrato permita división o cesión parcial.",
+                  "Negociables por endoso.",
+                  "Convertibles automáticamente en acciones."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "¿Qué órgano administra la sociedad de responsabilidad limitada?",
+            "options": [
+                  "Los comisarios.",
+                  "El consejo de vigilancia.",
+                  "Uno o más gerentes.",
+                  "Los liquidadores desde su constitución."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "La asamblea de socios en la S. de R.L. es:",
+            "options": [
+                  "Un órgano auxiliar de los gerentes.",
+                  "El órgano supremo de la sociedad.",
+                  "Un órgano meramente consultivo.",
+                  "El órgano de vigilancia externo."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Salvo pacto en contrario, las resoluciones de la asamblea de socios se toman por mayoría de votos que representen por lo menos:",
+            "options": [
+                  "La mitad del capital social.",
+                  "Dos terceras partes de las acciones.",
+                  "Tres cuartas partes de los acreedores.",
+                  "La totalidad de los administradores."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La asamblea de socios de una S. de R.L. debe reunirse:",
+            "options": [
+                  "Cada mes.",
+                  "Cada tres años.",
+                  "Sólo cuando haya pérdidas.",
+                  "Por lo menos una vez al año."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "En la S. de R.L., la modificación del contrato social requiere, salvo pacto en contrario:",
+            "options": [
+                  "Mayoría de socios que represente al menos tres cuartas partes del capital social.",
+                  "Decisión unilateral del gerente.",
+                  "Aprobación exclusiva del consejo de vigilancia.",
+                  "Voto de los acreedores sociales."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "En una S. de R.L., el cambio de objeto social o aumento de obligaciones de los socios requiere:",
+            "options": [
+                  "Mayoría simple.",
+                  "Unanimidad de votos.",
+                  "Sólo autorización del gerente.",
+                  "Aprobación del Registro Público de Comercio."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "En la S. de R.L., el Consejo de Vigilancia:",
+            "options": [
+                  "Es siempre obligatorio.",
+                  "Sustituye a la asamblea de socios.",
+                  "Puede constituirse si así lo establece el contrato social.",
+                  "Debe integrarse exclusivamente por acreedores."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "La S. de R.L. llevará un libro especial de socios donde se inscriben:",
+            "options": [
+                  "Únicamente las utilidades anuales.",
+                  "Sólo los nombres de los gerentes.",
+                  "Los acuerdos del consejo de vigilancia.",
+                  "Nombre y domicilio de socios, aportaciones y transmisión de partes sociales."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "La sociedad anónima existe bajo:",
+            "options": [
+                  "Denominación y se compone exclusivamente de socios cuya obligación se limita al pago de sus acciones.",
+                  "Razón social y todos los socios responden ilimitadamente.",
+                  "Denominación y socios obligados a prestaciones personales.",
+                  "Razón social formada sólo por comanditados."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Para constituir una sociedad anónima se requiere como mínimo:",
+            "options": [
+                  "Un accionista único.",
+                  "Dos socios, cada uno con al menos una acción suscrita.",
+                  "Cinco socios cooperativistas.",
+                  "Cincuenta socios como máximo."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "En la constitución de una S.A., cuando las acciones se pagan en dinero debe exhibirse por lo menos:",
+            "options": [
+                  "5% del valor de cada acción.",
+                  "10% del valor de cada acción.",
+                  "20% del valor de cada acción.",
+                  "50% del valor de cada acción."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "Si una acción se paga con bienes distintos del numerario, debe exhibirse:",
+            "options": [
+                  "Sólo el 20%.",
+                  "Sólo el 50%.",
+                  "Lo que autorice el comisario.",
+                  "Íntegramente su valor."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "La sociedad anónima puede constituirse:",
+            "options": [
+                  "Por comparecencia ante fedatario público o por suscripción pública.",
+                  "Sólo mediante contrato privado.",
+                  "Sólo por resolución judicial.",
+                  "Únicamente mediante asamblea de liquidadores."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "En la S.A., los bonos de fundador:",
+            "options": [
+                  "Forman parte del capital social.",
+                  "Dan derecho a administrar la sociedad.",
+                  "Sólo confieren derecho a percibir la participación en utilidades que expresen.",
+                  "Sustituyen a las acciones ordinarias."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "La participación de fundadores en utilidades anuales no puede exceder de:",
+            "options": [
+                  "10%.",
+                  "20%.",
+                  "25%.",
+                  "50%."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Las acciones de una sociedad anónima sirven para:",
+            "options": [
+                  "Acreditar exclusivamente deudas laborales.",
+                  "Acreditar y transmitir la calidad y derechos de socio.",
+                  "Sustituir la escritura constitutiva.",
+                  "Convertir la sociedad en cooperativa."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Como regla general, las acciones serán:",
+            "options": [
+                  "De valor desigual y sin derechos corporativos.",
+                  "Al portador.",
+                  "De igual valor y conferirán iguales derechos.",
+                  "Siempre de voto limitado."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "Salvo pacto permitido por la ley, cada acción da derecho a:",
+            "options": [
+                  "Dos votos.",
+                  "Voto sólo en asamblea extraordinaria.",
+                  "Voto sólo si el accionista es fundador.",
+                  "Un voto."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "Las acciones de voto limitado tienen preferencia para:",
+            "options": [
+                  "Recibir un dividendo previo antes de que se asignen dividendos a las ordinarias.",
+                  "Excluir a los administradores sin acuerdo de asamblea.",
+                  "Sustituir al comisario.",
+                  "Disolver automáticamente la sociedad."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Las acciones totalmente pagadas se denominan:",
+            "options": [
+                  "Acciones provisionales.",
+                  "Acciones liberadas.",
+                  "Acciones de fundador.",
+                  "Acciones sociales."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Si una acción pertenece a varios copropietarios, éstos deben:",
+            "options": [
+                  "Dividirla materialmente en partes sociales.",
+                  "Votar separadamente.",
+                  "Nombrar representante común.",
+                  "Cancelarla y emitir una nueva."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "Los títulos definitivos de acciones deben expedirse dentro de un plazo que no exceda de:",
+            "options": [
+                  "Treinta días.",
+                  "Seis meses.",
+                  "Dos años.",
+                  "Un año."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "Mientras se expiden los títulos definitivos, la sociedad puede emitir:",
+            "options": [
+                  "Certificados provisionales nominativos.",
+                  "Bonos laborales.",
+                  "Acciones al portador.",
+                  "Partes sociales provisionales."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La sociedad considerará dueño de las acciones a quien:",
+            "options": [
+                  "Tenga una copia simple de compraventa.",
+                  "Aparezca inscrito como tal en el registro de acciones.",
+                  "Sea reconocido verbalmente por otro accionista.",
+                  "Haya pagado impuestos personales."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "En caso de aumento de capital social, los accionistas tienen derecho preferente para suscribir nuevas acciones dentro de:",
+            "options": [
+                  "Cinco días.",
+                  "Ocho días.",
+                  "Quince días.",
+                  "Treinta días."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "No podrán emitirse nuevas acciones hasta que:",
+            "options": [
+                  "Se reforme la denominación social.",
+                  "Se nombre nuevo comisario.",
+                  "Se apruebe un informe mensual.",
+                  "Las acciones precedentes estén íntegramente pagadas."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "La administración de la sociedad anónima puede estar a cargo de:",
+            "options": [
+                  "Uno o varios administradores temporales y revocables.",
+                  "Exclusivamente los comisarios.",
+                  "Los acreedores sociales.",
+                  "Los accionistas minoritarios únicamente."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Cuando la administración está a cargo de dos o más personas, se constituye:",
+            "options": [
+                  "Consejo de vigilancia.",
+                  "Consejo de administración.",
+                  "Asamblea constitutiva.",
+                  "Comité de liquidación."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "La vigilancia de la sociedad anónima corresponde a:",
+            "options": [
+                  "Los liquidadores.",
+                  "Los socios comanditados.",
+                  "Uno o varios comisarios.",
+                  "Los gerentes."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "La asamblea general de accionistas es:",
+            "options": [
+                  "Un órgano auxiliar del comisario.",
+                  "Un órgano opcional.",
+                  "Un órgano externo de fiscalización.",
+                  "El órgano supremo de la sociedad."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "Las asambleas generales de accionistas pueden ser:",
+            "options": [
+                  "Ordinarias y extraordinarias.",
+                  "Civiles y mercantiles.",
+                  "Judiciales y administrativas.",
+                  "Internas y externas."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La asamblea ordinaria debe reunirse:",
+            "options": [
+                  "Cada mes.",
+                  "Por lo menos una vez al año.",
+                  "Sólo cuando haya pérdidas.",
+                  "Cada cinco años."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Corresponde a la asamblea ordinaria:",
+            "options": [
+                  "Transformar la sociedad.",
+                  "Fusionarla con otra sociedad.",
+                  "Discutir, aprobar o modificar el informe de administradores y nombrar administradores o comisarios.",
+                  "Disolver anticipadamente la sociedad."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "Corresponde a la asamblea extraordinaria:",
+            "options": [
+                  "Aprobar gastos ordinarios de administración.",
+                  "Revisar únicamente contratos menores.",
+                  "Nombrar empleados operativos.",
+                  "Prorrogar la duración, transformar, fusionar o disolver anticipadamente la sociedad."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "El accionista que vote en contra de ciertos acuerdos extraordinarios puede ejercer:",
+            "options": [
+                  "Derecho de separación.",
+                  "Derecho a administrar automáticamente.",
+                  "Derecho a cancelar todas las acciones.",
+                  "Derecho a excluir a la mayoría."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La sociedad en comandita por acciones se compone de:",
+            "options": [
+                  "Socios cooperativistas y socios industriales.",
+                  "Socios comanditados y socios comanditarios.",
+                  "Únicamente accionistas con responsabilidad limitada.",
+                  "Gerentes y comisarios sin socios."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "En la comandita por acciones, los socios comanditados responden:",
+            "options": [
+                  "Sólo con el monto de sus acciones.",
+                  "Únicamente por sus aportaciones suplementarias.",
+                  "Subsidiaria, ilimitada y solidariamente.",
+                  "Sólo en caso de liquidación."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "En la comandita por acciones, los comanditarios están obligados:",
+            "options": [
+                  "A administrar directamente la sociedad.",
+                  "A responder ilimitadamente.",
+                  "A cubrir deudas de comanditados.",
+                  "Al pago de sus acciones."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "La comandita por acciones se rige por:",
+            "options": [
+                  "Las reglas de la sociedad anónima, salvo disposiciones especiales.",
+                  "Las reglas exclusivas de la sociedad cooperativa.",
+                  "La legislación civil únicamente.",
+                  "Las normas de la sociedad irregular."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "En la comandita por acciones, el capital social está dividido en:",
+            "options": [
+                  "Partes sociales.",
+                  "Acciones.",
+                  "Certificados cooperativos.",
+                  "Bonos de fundador."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Las acciones de la comandita por acciones no pueden cederse sin consentimiento de:",
+            "options": [
+                  "Sólo los comisarios.",
+                  "Sólo la mayoría simple de comanditarios.",
+                  "La totalidad de los comanditados y dos terceras partes de los comanditarios.",
+                  "La Secretaría de Economía."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "A la razón social o denominación de la comandita por acciones debe agregarse:",
+            "options": [
+                  "“Sociedad de Responsabilidad Limitada”.",
+                  "“Sociedad Cooperativa”.",
+                  "“Sociedad Anónima”.",
+                  "“Sociedad en Comandita por Acciones” o “S. en C. por A.”"
+            ],
+            "answer": 3
+      },
+      {
+            "q": "Conforme a la LGSM, las sociedades cooperativas:",
+            "options": [
+                  "Se rigen por su legislación especial.",
+                  "Se regulan íntegramente como sociedades anónimas.",
+                  "Son idénticas a las sociedades por acciones simplificadas.",
+                  "No son reconocidas como sociedades mercantiles."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La LGSM reconoce a la sociedad cooperativa como:",
+            "options": [
+                  "Una figura exclusivamente civil.",
+                  "Una especie de sociedad mercantil.",
+                  "Una forma de asociación política.",
+                  "Una modalidad de sociedad irregular."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Si en un examen preguntan qué ley regula de forma específica a las sociedades cooperativas, la respuesta correcta sería:",
+            "options": [
+                  "La Ley Federal del Trabajo.",
+                  "La Ley General de Títulos y Operaciones de Crédito.",
+                  "La legislación especial en materia cooperativa.",
+                  "El Código Nacional de Procedimientos Civiles y Familiares."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "La regulación de la sociedad cooperativa dentro de la LGSM es:",
+            "options": [
+                  "Amplia y detallada como la S.A.",
+                  "Completa como la S. de R.L.",
+                  "Igual a la comandita por acciones.",
+                  "De remisión a legislación especial."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "En las sociedades de capital variable, el capital puede aumentar por:",
+            "options": [
+                  "Aportaciones posteriores de socios o admisión de nuevos socios.",
+                  "Exclusión automática de acreedores.",
+                  "Cancelación de asambleas.",
+                  "Nombramiento de comisarios."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "En las sociedades de capital variable, el capital puede disminuir por:",
+            "options": [
+                  "Revisión del balance anual.",
+                  "Retiro parcial o total de aportaciones.",
+                  "Nombramiento de nuevos gerentes.",
+                  "Cambio de domicilio social."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "A la razón social o denominación de una sociedad de capital variable debe añadirse:",
+            "options": [
+                  "“En liquidación”.",
+                  "“Sociedad irregular”.",
+                  "“De capital variable”.",
+                  "“De responsabilidad ilimitada”."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "El contrato constitutivo de una sociedad de capital variable debe contener:",
+            "options": [
+                  "Sólo el nombre del administrador.",
+                  "Únicamente el objeto social.",
+                  "Sólo la fecha de inscripción.",
+                  "Las condiciones para aumento y disminución del capital social."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "En la S.A., S. de R.L. y comandita por acciones de capital variable debe indicarse:",
+            "options": [
+                  "Un capital mínimo.",
+                  "Un capital máximo obligatorio.",
+                  "La prohibición de aumentar capital.",
+                  "La identidad de todos los acreedores."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Todo aumento o disminución del capital social variable debe inscribirse en:",
+            "options": [
+                  "El libro de actas del Registro Civil.",
+                  "Un libro de registro que llevará la sociedad.",
+                  "El expediente penal de la sociedad.",
+                  "El libro de acreedores laborales."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "La fusión de sociedades debe decidirse:",
+            "options": [
+                  "Sólo por la sociedad absorbente.",
+                  "Sólo por los acreedores sociales.",
+                  "Por cada sociedad que participe, conforme a su naturaleza.",
+                  "Exclusivamente por los administradores."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "Los acuerdos de fusión deben:",
+            "options": [
+                  "Mantenerse secretos hasta la liquidación.",
+                  "Ser inscritos en el Registro Público de Comercio y publicarse.",
+                  "Aprobarse sólo verbalmente.",
+                  "Sustituirse por una autorización del comisario."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Como regla general, la fusión surte efectos:",
+            "options": [
+                  "Tres meses después de la inscripción.",
+                  "Inmediatamente al firmar el acuerdo privado.",
+                  "Después de cinco años.",
+                  "Sólo cuando se nombre liquidador."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La fusión puede surtir efectos al momento de la inscripción si:",
+            "options": [
+                  "Todos los socios renuncian a sus acciones.",
+                  "Se pacta no pagar a acreedores.",
+                  "Se elimina el capital social.",
+                  "Se paga a acreedores, se deposita su importe o consta su consentimiento."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "La transformación implica que:",
+            "options": [
+                  "Una sociedad adopta otro tipo social reconocido por la ley.",
+                  "Una sociedad desaparece siempre sin transmisión patrimonial.",
+                  "Una sociedad se convierte automáticamente en asociación civil.",
+                  "Una sociedad cancela sus obligaciones frente a terceros."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La escisión ocurre cuando una sociedad:",
+            "options": [
+                  "Cambia únicamente su denominación.",
+                  "Divide total o parcialmente su activo, pasivo y capital social para transmitirlos en bloque a otra u otras sociedades.",
+                  "Nombra nuevos administradores.",
+                  "Aumenta su capital por nuevas aportaciones."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "En la escisión, la sociedad que se escinde puede:",
+            "options": [
+                  "Extinguirse o subsistir, según se transmita total o parcialmente su patrimonio.",
+                  "Convertirse obligatoriamente en cooperativa.",
+                  "Evitar siempre la inscripción registral.",
+                  "Suprimir los derechos de acreedores."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Las sociedades que resultan de una escisión pueden ser:",
+            "options": [
+                  "Sociedades de nueva creación.",
+                  "Personas físicas comerciantes.",
+                  "Acreedores sociales.",
+                  "Asociaciones políticas."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Es causa de disolución de una sociedad:",
+            "options": [
+                  "Expiración del término fijado en el contrato social.",
+                  "Celebración de asamblea ordinaria.",
+                  "Nombramiento de comisarios.",
+                  "Emisión de certificados provisionales."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "También es causa de disolución:",
+            "options": [
+                  "Pago de dividendos.",
+                  "Imposibilidad de seguir realizando el objeto principal de la sociedad.",
+                  "Cambio de gerente.",
+                  "Inscripción del libro de socios."
+            ],
+            "answer": 1
+      },
+      {
+            "q": "Una sociedad puede disolverse por acuerdo de los socios tomado:",
+            "options": [
+                  "Sólo por unanimidad absoluta en todos los casos.",
+                  "Únicamente por los acreedores.",
+                  "De conformidad con el contrato social y la ley.",
+                  "Exclusivamente por los trabajadores."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "La pérdida de cierta parte del capital social puede ser causa de disolución cuando:",
+            "options": [
+                  "Así lo determine la ley o el contrato social.",
+                  "Lo solicite verbalmente un administrador.",
+                  "Se celebre una asamblea ordinaria.",
+                  "Exista un bono de fundador."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Disuelta la sociedad, ésta:",
+            "options": [
+                  "Conserva su personalidad jurídica para efectos de la liquidación.",
+                  "Pierde inmediatamente toda personalidad jurídica.",
+                  "Se convierte automáticamente en sociedad civil.",
+                  "Deja de responder frente a acreedores."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "Durante la liquidación, a la razón social o denominación debe agregarse:",
+            "options": [
+                  "“De capital variable”.",
+                  "“Sociedad irregular”.",
+                  "“En liquidación”.",
+                  "“Sociedad cooperativa”."
+            ],
+            "answer": 2
+      },
+      {
+            "q": "La liquidación estará a cargo de:",
+            "options": [
+                  "Los socios industriales.",
+                  "Los fundadores.",
+                  "Los comisarios exclusivamente.",
+                  "Uno o más liquidadores."
+            ],
+            "answer": 3
+      },
+      {
+            "q": "Los liquidadores tienen como función esencial:",
+            "options": [
+                  "Concluir operaciones sociales pendientes, cobrar créditos, pagar deudas y liquidar el patrimonio social.",
+                  "Constituir nuevas acciones de fundador.",
+                  "Sustituir a los acreedores en sus derechos.",
+                  "Evitar la rendición de cuentas."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La sociedad por acciones simplificada puede constituirse con:",
+            "options": [
+                  "Uno o más accionistas.",
+                  "Mínimo dos socios comanditados.",
+                  "Mínimo cinco cooperativistas.",
+                  "Máximo cincuenta socios."
+            ],
+            "answer": 0
+      },
+      {
+            "q": "La denominación de la sociedad por acciones simplificada debe ir seguida de:",
+            "options": [
+                  "“Sociedad Anónima” o “S.A.”",
+                  "“Sociedad por Acciones Simplificada” o “S.A.S.”",
+                  "“Sociedad en Comandita por Acciones” o “S. en C. por A.”",
+                  "“Sociedad de Responsabilidad Limitada” o “S. de R.L.”"
+            ],
+            "answer": 1
+      }
+];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+    let userAnswers = [];
+
+    const letters = ["A", "B", "C", "D"];
+
+    const quizEl = document.getElementById("quiz");
+    const resultEl = document.getElementById("result");
+    const counterEl = document.getElementById("counter");
+    const scoreLiveEl = document.getElementById("scoreLive");
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const restartBtn2 = document.getElementById("restartBtn2");
+    const progressEl = document.getElementById("progress");
+    const reviewEl = document.getElementById("review");
+    const toggleReviewBtn = document.getElementById("toggleReviewBtn");
+
+    function renderQuestion() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      answered = false;
+      nextBtn.disabled = true;
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = "";
+
+      const q = questions[current];
+      counterEl.textContent = `Pregunta ${current + 1} de ${questions.length}`;
+      scoreLiveEl.textContent = `Aciertos: ${score}`;
+      questionEl.textContent = q.q;
+      optionsEl.innerHTML = "";
+
+      const progress = (current / questions.length) * 100;
+      progressEl.style.width = `${progress}%`;
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option";
+        btn.innerHTML = `<span class="letter">${letters[index]}</span><span>${opt}</span>`;
+        btn.addEventListener("click", () => selectAnswer(index, btn));
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(index, selectedBtn) {
+      if (answered) return;
+      answered = true;
+
+      const q = questions[current];
+      const isCorrect = index === q.answer;
+
+      userAnswers[current] = index;
+
+      if (isCorrect) {
+        score++;
+        selectedBtn.classList.add("correct");
+        feedbackEl.className = "feedback ok";
+        feedbackEl.textContent = "Correcto.";
+      } else {
+        selectedBtn.classList.add("incorrect");
+        feedbackEl.className = "feedback bad";
+        feedbackEl.textContent = `Incorrecto. Respuesta correcta: ${letters[q.answer]}) ${q.options[q.answer]}`;
+      }
+
+      [...optionsEl.children].forEach((child, i) => {
+        child.classList.add("disabled");
+        if (i === q.answer) child.classList.add("correct");
+      });
+
+      scoreLiveEl.textContent = `Aciertos: ${score}`;
+      nextBtn.disabled = false;
+
+      if (current === questions.length - 1) {
+        nextBtn.textContent = "Ver resultado";
+      }
+    }
+
+    function nextQuestion() {
+      if (!answered) return;
+
+      if (current < questions.length - 1) {
+        current++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      quizEl.style.display = "none";
+      resultEl.style.display = "block";
+      progressEl.style.width = "100%";
+
+      const wrong = questions.length - score;
+      const pct = Math.round((score / questions.length) * 100);
+
+      document.getElementById("finalScore").textContent = `${score}/${questions.length}`;
+      document.getElementById("totalRight").textContent = score;
+      document.getElementById("totalWrong").textContent = wrong;
+      document.getElementById("percent").textContent = `${pct}%`;
+
+      let msg = "";
+      if (pct >= 90) msg = "Excelente dominio de la LGSM.";
+      else if (pct >= 80) msg = "Muy buen resultado. Revisa los errores puntuales.";
+      else if (pct >= 70) msg = "Buen avance, pero todavía conviene reforzar figuras societarias.";
+      else if (pct >= 60) msg = "Resultado regular. Repasa especialmente sociedades y figuras jurídicas.";
+      else msg = "Necesitas reforzar los temas clave antes del examen.";
+
+      document.getElementById("finalMessage").textContent = msg;
+      buildReview();
+    }
+
+    function buildReview() {
+      reviewEl.innerHTML = "";
+      questions.forEach((q, i) => {
+        const user = userAnswers[i];
+        const ok = user === q.answer;
+        const item = document.createElement("div");
+        item.className = `review-item ${ok ? "right" : "wrong"}`;
+        item.innerHTML = `
+          <strong>${i + 1}. ${q.q}</strong>
+          <div class="small">Tu respuesta: ${user !== undefined ? letters[user] + ") " + q.options[user] : "Sin responder"}</div>
+          <div class="small">Correcta: ${letters[q.answer]}) ${q.options[q.answer]}</div>
+        `;
+        reviewEl.appendChild(item);
+      });
+    }
+
+    function restart() {
+      current = 0;
+      score = 0;
+      answered = false;
+      userAnswers = [];
+      nextBtn.textContent = "Siguiente";
+      resultEl.style.display = "none";
+      reviewEl.style.display = "none";
+      toggleReviewBtn.textContent = "Ver revisión";
+      quizEl.style.display = "block";
+      renderQuestion();
+    }
+
+    [nextBtn, restartBtn, restartBtn2, toggleReviewBtn].forEach(btn => {
+      if (btn) btn.type = "button";
+    });
+
+    nextBtn.addEventListener("click", nextQuestion);
+    restartBtn.addEventListener("click", restart);
+    restartBtn2.addEventListener("click", restart);
+    toggleReviewBtn.addEventListener("click", () => {
+      const visible = reviewEl.style.display === "block";
+      reviewEl.style.display = visible ? "none" : "block";
+      toggleReviewBtn.textContent = visible ? "Ver revisión" : "Ocultar revisión";
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>
